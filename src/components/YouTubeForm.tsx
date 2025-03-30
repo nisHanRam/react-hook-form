@@ -3,7 +3,26 @@ import { useForm } from "react-hook-form";
 type FormValues = { username: string; email: string; channel: string };
 
 const YouTubeForm = () => {
-  const form = useForm<FormValues>();
+  const form = useForm<FormValues>({
+    defaultValues: async () => {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users/1"
+      );
+      const data = await response.json();
+      return {
+        username: "Batman", // Reserving some value as default
+        email: data?.email, // Reserving a previously saved value as default
+        channel: "", // Reserving some value as default
+      };
+    },
+    /* NOTE: If we had no previous value to fetch we would have directly passed the object
+    defaultValues: {
+      username: "Batman",
+      email: "",
+      channel: "",
+    }, */
+  });
+
   const { register, handleSubmit, formState } = form;
   const { errors } = formState;
 
@@ -77,9 +96,3 @@ const YouTubeForm = () => {
 };
 
 export default YouTubeForm;
-
-/* Custom validation is added using the validate field of the options object,i.e., the second argument of the register method.
-It is a function that automatically receives the field value as an argument. [See validate for Channel input.]
-Within the function you can add validation conditions and return true if the condition passes and return an error message otherwise. */
-
-/* NOTE: Validate can also be an object with multiple key-value pairs. [See validate for Email input.] */
