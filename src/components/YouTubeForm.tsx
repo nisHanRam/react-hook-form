@@ -1,26 +1,23 @@
 import { useForm } from "react-hook-form";
 
-type FormValues = { username: string; email: string; channel: string };
+type FormValues = {
+  username: string;
+  email: string;
+  channel: string;
+  social: { twitter: string; facebook: string };
+};
 
 const YouTubeForm = () => {
   const form = useForm<FormValues>({
-    defaultValues: async () => {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/users/1"
-      );
-      const data = await response.json();
-      return {
-        username: "Batman", // Reserving some value as default
-        email: data?.email, // Reserving a previously saved value as default
-        channel: "", // Reserving some value as default
-      };
-    },
-    /* NOTE: If we had no previous value to fetch we would have directly passed the object
     defaultValues: {
-      username: "Batman",
+      username: "",
       email: "",
       channel: "",
-    }, */
+      social: {
+        twitter: "",
+        facebook: "",
+      },
+    },
   });
 
   const { register, handleSubmit, formState } = form;
@@ -90,9 +87,29 @@ const YouTubeForm = () => {
         <p className="error">{errors?.channel?.message}</p>
       </div>
 
+      <div className="form-control">
+        <label htmlFor="twitter">Twitter</label>
+        <input
+          type="text"
+          id="twitter"
+          {...register("social.twitter", { required: true })}
+        />
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="facebook">Facebook</label>
+        <input
+          type="text"
+          id="facebook"
+          {...register("social.facebook", { required: true })}
+        />
+      </div>
+
       <button>Submit</button>
     </form>
   );
 };
 
 export default YouTubeForm;
+
+// If you want to group some inputs into an object (may be because the API accepts the data in such format) you can make use of nested object.
