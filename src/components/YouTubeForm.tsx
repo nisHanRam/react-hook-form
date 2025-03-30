@@ -5,6 +5,7 @@ type FormValues = {
   email: string;
   channel: string;
   social: { twitter: string; facebook: string };
+  phoneNumbers: string[];
 };
 
 const YouTubeForm = () => {
@@ -17,6 +18,7 @@ const YouTubeForm = () => {
         twitter: "",
         facebook: "",
       },
+      phoneNumbers: ["", ""],
     },
   });
 
@@ -92,8 +94,11 @@ const YouTubeForm = () => {
         <input
           type="text"
           id="twitter"
-          {...register("social.twitter", { required: true })}
+          {...register("social.twitter", {
+            required: "Please provide twitter profile",
+          })}
         />
+        <p className="error">{errors?.social?.twitter?.message}</p>
       </div>
 
       <div className="form-control">
@@ -101,8 +106,35 @@ const YouTubeForm = () => {
         <input
           type="text"
           id="facebook"
-          {...register("social.facebook", { required: true })}
+          {...register("social.facebook", {
+            required: "Please provide facebook profile",
+          })}
         />
+        <p className="error">{errors?.social?.facebook?.message}</p>
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="primary-phone">Primary Phone Number</label>
+        <input
+          type="text"
+          id="primary-phone"
+          {...register("phoneNumbers.0", {
+            required: "Please provide primary phone number",
+          })}
+        />
+        <p className="error">{errors?.phoneNumbers?.[0]?.message}</p>
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="secondary-phone">Secondary Phone Number</label>
+        <input
+          type="text"
+          id="secondary-phone"
+          {...register("phoneNumbers.1", {
+            required: "Please provide secondary phone number",
+          })}
+        />
+        <p className="error">{errors?.phoneNumbers?.[1]?.message}</p>
       </div>
 
       <button>Submit</button>
@@ -112,4 +144,5 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-// If you want to group some inputs into an object (may be because the API accepts the data in such format) you can make use of nested object.
+// When getting array values in react-hook-form, dot notation (phoneNumbers.0) is used for consistency with TypeScript.
+// Square brackets (phoneNumbers[0]) will not work.
