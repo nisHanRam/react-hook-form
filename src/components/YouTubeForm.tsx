@@ -9,7 +9,6 @@ const YouTubeForm = () => {
 
   const submitHandler = (data: FormValues) => {
     console.log("Form submitted", data);
-    console.log(errors);
   };
 
   return (
@@ -36,6 +35,20 @@ const YouTubeForm = () => {
                 /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
               message: "Invalid email",
             },
+            validate: {
+              notAdmin: (fieldValue) => {
+                return (
+                  fieldValue !== "admin@example.com" ||
+                  "Enter a different email"
+                );
+              },
+              notBlacklisted: (fieldValue) => {
+                return (
+                  !fieldValue.endsWith("baddomain.com") ||
+                  "This domain is not supported"
+                );
+              },
+            },
           })}
         />
         <p className="error">{errors?.email?.message}</p>
@@ -48,6 +61,11 @@ const YouTubeForm = () => {
           id="channel"
           {...register("channel", {
             required: { value: true, message: "Channel name is required" },
+            validate: (fieldValue) => {
+              return (
+                fieldValue !== "Microsoft" || "This channel name is reserved"
+              );
+            },
           })}
         />
         <p className="error">{errors?.channel?.message}</p>
@@ -60,13 +78,8 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/* The formState object not just returns the errors field, but also returns the following:
-=> isDirty – Indicates whether any of the form fields have been modified.
-=> isValid – Returns true if the form is valid (i.e., passes all validation rules).
-=> isSubmitting – Becomes true while the form is being submitted.
-=> isSubmitted – Indicates whether the form has been submitted at least once.
-=> isSubmitSuccessful – Returns true if the form submission was successful.
-=> touchedFields – Tracks which fields have been touched.
-=> dirtyFields – Keeps track of fields that have been modified.
-=> submitCount – Counts the number of times the form has been submitted.
-For more refer: https://react-hook-form.com/docs/useform/formstate */
+/* Custom validation is added using the validate field of the options object,i.e., the second argument of the register method.
+It is a function that automatically receives the field value as an argument. [See validate for Channel input.]
+Within the function you can add validation conditions and return true if the condition passes and return an error message otherwise. */
+
+/* NOTE: Validate can also be an object with multiple key-value pairs. [See validate for Email input.] */
