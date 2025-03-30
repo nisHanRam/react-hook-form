@@ -6,7 +6,9 @@ type FormValues = {
   channel: string;
   social: { twitter: string; facebook: string };
   phoneNumbers: string[];
-  phNumbers: { number: string }[]; // We are using an array of objects, instead of array of strings, because useFieldArray works with only object values.
+  phNumbers: { number: string }[];
+  age: number;
+  dob: Date;
 };
 
 const YouTubeForm = () => {
@@ -21,6 +23,8 @@ const YouTubeForm = () => {
       },
       phoneNumbers: ["", ""],
       phNumbers: [{ number: "" }],
+      age: 0,
+      dob: new Date(),
     },
   });
 
@@ -163,11 +167,35 @@ const YouTubeForm = () => {
         </div>
       </div>
 
+      <div className="form-control">
+        <label htmlFor="age">Age</label>
+        <input
+          type="number"
+          id="age"
+          {...register("age", {
+            valueAsNumber: true, // This ensures that numeric value is not converted to string during submission
+            required: { value: true, message: "Age is required" },
+          })}
+        />
+        <p className="error">{errors?.age?.message}</p>
+      </div>
+
+      <div className="form-control">
+        <label htmlFor="dob">Date of birth</label>
+        <input
+          type="date"
+          id="dob"
+          {...register("dob", {
+            valueAsDate: true, // This ensures that date value is not converted to string during submission
+            required: { value: true, message: "Date of birth is required" },
+          })}
+        />
+        <p className="error">{errors?.dob?.message}</p>
+      </div>
+
       <button>Submit</button>
     </form>
   );
 };
 
 export default YouTubeForm;
-
-// For more on useFieldArray: https://react-hook-form.com/docs/usefieldarray
