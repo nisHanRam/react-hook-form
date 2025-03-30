@@ -11,13 +11,34 @@ const YouTubeForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(submitHandler)}>
+    <form onSubmit={handleSubmit(submitHandler)} noValidate>
       <label htmlFor="username">Username</label>
-      <input type="text" id="username" {...register("username")} />
+      <input
+        type="text"
+        id="username"
+        {...register("username", { required: "Username is required" })}
+      />
       <label htmlFor="email">Email</label>
-      <input type="email" id="email" {...register("email")} />
+      <input
+        type="email"
+        id="email"
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value:
+              /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/,
+            message: "Invalid email",
+          },
+        })}
+      />
       <label htmlFor="channel">Channel</label>
-      <input type="text" id="channel" {...register("channel")} />
+      <input
+        type="text"
+        id="channel"
+        {...register("channel", {
+          required: { value: true, message: "Channel name is required" },
+        })}
+      />
       <button>Submit</button>
     </form>
   );
@@ -25,22 +46,29 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/* useForm() hook is used to manage form state, validation, and submission.
-It returns an object that contains several properties and methods to handle forms.
-Here are some important proerties and methods:
-=> register(name, options?)	- Registers an input field, enabling validation and tracking.
-=> handleSubmit(onSubmit) - Handles form submission and validation before executing onSubmit.
-=> watch(name?) - Watches a specific input or the entire form for changes.
-=> setValue(name, value) - Programmatically sets the value of an input.
-=> getValues(name?) - Retrieves the current value of an input or all values.
-=> reset(values?) - Resets the form fields to their initial values.
-=> trigger(name?) - Manually triggers validation for an input or the entire form.
-=> formState - Contains form-related states like errors, isValid, isDirty, etc.
-=> control - Used with controlled components and advanced features like Controller. */
+/* noValidate attribute on form prevents browser validation and 
+allows react-hook-form to handle the validation of the fields. */
 
-/* register helps bind the form inputs to the form state using name attribute (that is why it is must)
-register(name_attribute) returns an object containing following properties:
-=> name - The input's name attribute, which is used to track it in the form state.
-=> ref - A reference to the DOM element (for uncontrolled inputs).
-=> onChange - Event handler to update the form state when input value changes.
-=> onBlur - Event handler for blur events (used for validation).*/
+/* List of validation rules supported by react-hook-form
+=> required - self explanatory
+=> min & max - minimum and maximum values of numerical input types
+=> minLength & maxLength - minimum and maximum length of textual data (strings)
+=> pattern - regex (regular expression) that the input string should match
+=> validate - Is used to add custom validation. */
+
+/* register method is used not only to bind the form inputs to the form state,
+but also to apply the validation rules.
+The second argument of register method is an object with validation rule.
+This is how you can apply a validation rule: { required: true }
+If you wish to provide an error message as well (in case of validation failing)
+you can use: { required: "Username is required" }
+For more on register and validation refer: https://react-hook-form.com/docs/useform/register */
+
+/* NOTE: This: { required: "Username is required" }, and
+This: { required: { value: true, message: "Username is required" }} are equivalent. */
+
+/* Email validation regex for most practical emails:
+^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$
+In JavaScript regex literals must be enclosed in / (forward slashes) when defining them directly.
+That is why we used:
+/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/ */
