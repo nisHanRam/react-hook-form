@@ -41,9 +41,9 @@ const YouTubeForm = () => {
 
   const { errors, touchedFields, dirtyFields, isDirty } = formState;
 
-  console.log("touchedFields: ", touchedFields); // Shows the fields where user clicked, although he may not have changed the value
-  console.log("dirtyFields: ", dirtyFields); // Shows the fields whose values have changed from their previous values
-  console.log("isDirty: ", isDirty); // Shows where the form has changed from it previous values
+  // console.log("touchedFields: ", touchedFields); // Shows the fields where user clicked, although he may not have changed the value
+  // console.log("dirtyFields: ", dirtyFields); // Shows the fields whose values have changed from their previous values
+  // console.log("isDirty: ", isDirty); // Shows where the form has changed from it previous values
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -55,7 +55,7 @@ const YouTubeForm = () => {
   };
 
   const handleGetValues = () => {
-    console.log("Get values: ", getValues());
+    // console.log("Get values: ", getValues());
     // If you want to get only one field, pass that as an argument.
     // If you want to get more than one field, pass an array containing them as argument.
   };
@@ -76,7 +76,7 @@ const YouTubeForm = () => {
     // This is a subscription to changes in the form values
     const subscription = watch((value) => {
       // The callback function receives the updated value as an argument
-      console.log(value);
+      // console.log(value);
     });
     return () => {
       subscription.unsubscribe();
@@ -152,6 +152,7 @@ const YouTubeForm = () => {
             id="twitter"
             {...register("social.twitter", {
               required: "Please provide twitter profile",
+              disabled: true, // On disabling, a field's value becomes undefined, and validation message (eg - Please provide twitter profile) is not flagged
             })}
           />
           <p className="error">{errors?.social?.twitter?.message}</p>
@@ -164,6 +165,7 @@ const YouTubeForm = () => {
             id="facebook"
             {...register("social.facebook", {
               required: "Please provide facebook profile",
+              disabled: watch("email") === "", // This is how we can disable a field dynamically/conditionally
             })}
           />
           <p className="error">{errors?.social?.facebook?.message}</p>
