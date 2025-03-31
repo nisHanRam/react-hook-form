@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 
 type FormValues = {
@@ -39,17 +38,22 @@ const YouTubeForm = () => {
     setValue,
   } = form;
 
-  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
+  const {
+    errors,
+    touchedFields,
+    dirtyFields,
+    isDirty,
+    isValid,
+    isSubmitting,
+    isSubmitted,
+    isSubmitSuccessful,
+    submitCount,
+  } = formState;
 
-  console.log(
-    "isValid: ",
-    isValid
-  ); /* Checks whether the form state is valid or not.
-  If validation rules for all the fields is fulfilled it becomes true. */
-
-  // console.log("touchedFields: ", touchedFields); // Shows the fields where user clicked, although he may not have changed the value
-  // console.log("dirtyFields: ", dirtyFields); // Shows the fields whose values have changed from their previous values
-  // console.log("isDirty: ", isDirty); // Shows where the form has changed from it previous values
+  console.log("isSubmitting: ", isSubmitting); // Tracks whether a form is in process of being submitted
+  console.log("isSubmitted: ", isSubmitted); // Tracks whether a form is submitted
+  console.log("isSubmitSuccessful: ", isSubmitSuccessful); // Tracks whether a form is successfully submitted
+  console.log("submitCount: ", submitCount); // Tracks how many times form has been submitted
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
@@ -60,43 +64,9 @@ const YouTubeForm = () => {
     console.log("Form submitted", data);
   };
 
-  const errorHandler = (error: FieldErrors<FormValues>) => {
-    console.log("Form errors: ", error);
-  };
-
-  const handleGetValues = () => {
-    // console.log("Get values: ", getValues());
-    // If you want to get only one field, pass that as an argument.
-    // If you want to get more than one field, pass an array containing them as argument.
-  };
-
-  const handleSetValue = () => {
-    setValue("username", "Batman", {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    }); // Takes 3 arguments: field-name, value you want to set for that field, and an options object
-  };
-
-  // const watchUsername = watch("username"); // This is used to observe an form input field
-  // const watchFields = watch(["username", "email"]); // Pass an array if you wish to watch more than one fields
-  // const watchForm = watch(); // If you wish to watch the entire form
-
-  useEffect(() => {
-    // This is a subscription to changes in the form values
-    const subscription = watch((value) => {
-      // The callback function receives the updated value as an argument
-      // console.log(value);
-    });
-    return () => {
-      subscription.unsubscribe();
-    }; // Unsubscribing to watch in the cleanup function
-  }, [watch]); // Make sure to pass watch as a dependency
-
   return (
     <div>
-      {/* <h2>Watched Value: {JSON.stringify(watchForm)}</h2> */}
-      <form onSubmit={handleSubmit(submitHandler, errorHandler)} noValidate>
+      <form onSubmit={handleSubmit(submitHandler)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
@@ -159,7 +129,7 @@ const YouTubeForm = () => {
             id="twitter"
             {...register("social.twitter", {
               required: "Please provide twitter profile",
-              disabled: true, // On disabling, a field's value becomes undefined, and validation message (eg - Please provide twitter profile) is not flagged
+              disabled: true,
             })}
           />
           <p className="error">{errors?.social?.twitter?.message}</p>
@@ -171,7 +141,7 @@ const YouTubeForm = () => {
             id="facebook"
             {...register("social.facebook", {
               required: "Please provide facebook profile",
-              disabled: watch("email") === "", // This is how we can disable a field dynamically/conditionally
+              disabled: watch("email") === "",
             })}
           />
           <p className="error">{errors?.social?.facebook?.message}</p>
@@ -240,15 +210,9 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.dob?.message}</p>
         </div>
-        <button disabled={!isDirty || !isValid}>Submit</button>
-        {/* Disabling the submit button if user has not interacted with the form,
-        or, if the value provided for any one of the field is invalid. */}
-        <button type="button" onClick={handleGetValues}>
-          Get values
-        </button>
-        <button type="button" onClick={handleSetValue}>
-          Set value
-        </button>
+        <button disabled={!isDirty || !isValid || isSubmitting}>Submit</button>
+        {/* NOTE: isSubmitting can be used to disable the Submit button while form 
+        is being submitted. Thus preventing multiple submissions of the same form. */}
       </form>
     </div>
   );
@@ -256,9 +220,8 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/* We can pass a second argument to handleSubmit to handle errors.
-This error handler receives an argument "error" which is of type
-FieldErrors that you need to import from react-hook-form.
-This error handler is the perfect place to provide custom error 
-messages based on the errors object or even send reports to your
-login service. */
+/*
+isSubmitting - is initially false, becomes true during submission, and after submission becomes false
+isSubmitted - is initially false, becomes true after submission, and then remains true until the form is reset
+isSubmitSuccessful - is initially false and becomes true only is form is successfully submitted
+*/
