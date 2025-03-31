@@ -39,7 +39,13 @@ const YouTubeForm = () => {
     setValue,
   } = form;
 
-  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+  const { errors, touchedFields, dirtyFields, isDirty, isValid } = formState;
+
+  console.log(
+    "isValid: ",
+    isValid
+  ); /* Checks whether the form state is valid or not.
+  If validation rules for all the fields is fulfilled it becomes true. */
 
   // console.log("touchedFields: ", touchedFields); // Shows the fields where user clicked, although he may not have changed the value
   // console.log("dirtyFields: ", dirtyFields); // Shows the fields whose values have changed from their previous values
@@ -100,7 +106,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.username?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="email">Email</label>
           <input
@@ -131,7 +136,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.email?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="channel">Channel</label>
           <input
@@ -148,7 +152,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.channel?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="twitter">Twitter</label>
           <input
@@ -161,7 +164,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.social?.twitter?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="facebook">Facebook</label>
           <input
@@ -174,7 +176,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.social?.facebook?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="primary-phone">Primary Phone Number</label>
           <input
@@ -186,7 +187,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.phoneNumbers?.[0]?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="secondary-phone">Secondary Phone Number</label>
           <input
@@ -198,7 +198,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.phoneNumbers?.[1]?.message}</p>
         </div>
-
         <div>
           <label htmlFor="">List of phone numbers</label>
           <div>
@@ -217,7 +216,6 @@ const YouTubeForm = () => {
             </button>
           </div>
         </div>
-
         <div className="form-control">
           <label htmlFor="age">Age</label>
           <input
@@ -230,7 +228,6 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.age?.message}</p>
         </div>
-
         <div className="form-control">
           <label htmlFor="dob">Date of birth</label>
           <input
@@ -243,8 +240,9 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.dob?.message}</p>
         </div>
-
-        <button>Submit</button>
+        <button disabled={!isDirty || !isValid}>Submit</button>
+        {/* Disabling the submit button if user has not interacted with the form,
+        or, if the value provided for any one of the field is invalid. */}
         <button type="button" onClick={handleGetValues}>
           Get values
         </button>
