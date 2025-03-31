@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 
 type FormValues = {
@@ -36,6 +37,7 @@ const YouTubeForm = () => {
     watch,
     getValues,
     setValue,
+    reset, // Used to reset the form values to their default values
   } = form;
 
   const {
@@ -50,11 +52,6 @@ const YouTubeForm = () => {
     submitCount,
   } = formState;
 
-  console.log("isSubmitting: ", isSubmitting); // Tracks whether a form is in process of being submitted
-  console.log("isSubmitted: ", isSubmitted); // Tracks whether a form is submitted
-  console.log("isSubmitSuccessful: ", isSubmitSuccessful); // Tracks whether a form is successfully submitted
-  console.log("submitCount: ", submitCount); // Tracks how many times form has been submitted
-
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
     control,
@@ -63,6 +60,12 @@ const YouTubeForm = () => {
   const submitHandler = (data: FormValues) => {
     console.log("Form submitted", data);
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <div>
@@ -211,8 +214,9 @@ const YouTubeForm = () => {
           <p className="error">{errors?.dob?.message}</p>
         </div>
         <button disabled={!isDirty || !isValid || isSubmitting}>Submit</button>
-        {/* NOTE: isSubmitting can be used to disable the Submit button while form 
-        is being submitted. Thus preventing multiple submissions of the same form. */}
+        <button type="button" onClick={() => reset()}>
+          Reset
+        </button>
       </form>
     </div>
   );
@@ -220,8 +224,10 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/*
-isSubmitting - is initially false, becomes true during submission, and after submission becomes false
-isSubmitted - is initially false, becomes true after submission, and then remains true until the form is reset
-isSubmitSuccessful - is initially false and becomes true only is form is successfully submitted
-*/
+/* Normally, we plan to reset the form fields after successful form submission, and
+therefore we may think to call the reset method inside submitHandler after submission.
+However, the react-hook-library suggests that we should not do that. Instead, it
+advices that we should call the reset method inside an useEffect hook after the 
+isSubmitSuccessful state becomes true. [See code above]. */
+
+// There is more to reset. Read here: https://react-hook-form.com/docs/useform/reset
