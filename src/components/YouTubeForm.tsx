@@ -27,12 +27,7 @@ const YouTubeForm = () => {
       age: 0,
       dob: new Date(),
     },
-    mode: "onSubmit", // Triggers validation on form submission (this is default)
-    /*There are 4 more modes:
-    => onBlur = Triggers validation when you focus and blur out of the form field
-    => onTouched = Triggers validation on first blur event and after that on every change event
-    => onChange = Triggers validation on every change event
-    => all = onBlur + onChange */
+    mode: "onSubmit",
   });
 
   const {
@@ -44,6 +39,7 @@ const YouTubeForm = () => {
     getValues,
     setValue,
     reset,
+    trigger, // Used to manually trigger validation for form fields
   } = form;
 
   const {
@@ -230,9 +226,14 @@ const YouTubeForm = () => {
         <button type="button" onClick={() => reset()}>
           Reset
         </button>
+        <button type="button" onClick={() => trigger("channel")}>
+          Trigger Validate
+        </button>
       </form>
     </div>
   );
 };
 
 export default YouTubeForm;
+
+// If you wish to trigger validation for a particular field pass that as an argument to the trigger method
