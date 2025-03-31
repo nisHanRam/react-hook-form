@@ -29,7 +29,15 @@ const YouTubeForm = () => {
     },
   });
 
-  const { register, handleSubmit, formState, control, watch } = form;
+  const {
+    register,
+    handleSubmit,
+    formState,
+    control,
+    watch,
+    getValues,
+    setValue,
+  } = form;
   const { errors } = formState;
 
   const { fields, append, remove } = useFieldArray({
@@ -39,6 +47,20 @@ const YouTubeForm = () => {
 
   const submitHandler = (data: FormValues) => {
     console.log("Form submitted", data);
+  };
+
+  const handleGetValues = () => {
+    console.log("Get values: ", getValues());
+    // If you want to get only one field, pass that as an argument.
+    // If you want to get more than one field, pass an array containing them as argument.
+  };
+
+  const handleSetValue = () => {
+    setValue("username", "Batman", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    }); // Takes 3 arguments: field-name, value you want to set for that field, and an options object
   };
 
   // const watchUsername = watch("username"); // This is used to observe an form input field
@@ -212,6 +234,12 @@ const YouTubeForm = () => {
         </div>
 
         <button>Submit</button>
+        <button type="button" onClick={handleGetValues}>
+          Get values
+        </button>
+        <button type="button" onClick={handleSetValue}>
+          Set value
+        </button>
       </form>
     </div>
   );
@@ -219,10 +247,13 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/* Watch continuosly looks for changes in the input field being watched 
-and updates the UI in event of change. Thus, it causes re-render for every change.
-Watch can be used to show users a preview of values entered by them.
-You can also perform a side-effect after watching a value. For this you need to
-use the callback version of the watch method. The benefit of using
-useEffect technique is that it does not cause unnecessary renders and also allows
-us to observe the input fields (ALL) at the same time. */
+/* getValues is another method to read field values.
+getValues does not cause re-renders or subscribe to input changes.
+Thus, it is a more better option to get form values when user 
+performs some action, for example clicking a button.
+Here, note that changing a field value will not trigger getValue. */
+
+/* Calling setValue does not affect the state of the field such as 
+dirty, touched or validation. If we want to change the field state
+as ig the user is interacting, we need pass a third argument. 
+It is an options object as shown above. */
