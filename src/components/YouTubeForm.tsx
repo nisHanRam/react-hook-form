@@ -27,6 +27,12 @@ const YouTubeForm = () => {
       age: 0,
       dob: new Date(),
     },
+    mode: "onSubmit", // Triggers validation on form submission (this is default)
+    /*There are 4 more modes:
+    => onBlur = Triggers validation when you focus and blur out of the form field
+    => onTouched = Triggers validation on first blur event and after that on every change event
+    => onChange = Triggers validation on every change event
+    => all = onBlur + onChange */
   });
 
   const {
