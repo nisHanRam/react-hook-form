@@ -37,7 +37,7 @@ const YouTubeForm = () => {
     watch,
     getValues,
     setValue,
-    reset, // Used to reset the form values to their default values
+    reset,
   } = form;
 
   const {
@@ -103,6 +103,13 @@ const YouTubeForm = () => {
                     !fieldValue.endsWith("baddomain.com") ||
                     "This domain is not supported"
                   );
+                },
+                emailAvailable: async (fieldValue) => {
+                  const response = await fetch(
+                    `https://jsonplaceholder.typicode.com/users?email=${fieldValue}`
+                  );
+                  const data = await response.json();
+                  return data.length == 0 || "Email already exists";
                 },
               },
             })}
@@ -213,7 +220,7 @@ const YouTubeForm = () => {
           />
           <p className="error">{errors?.dob?.message}</p>
         </div>
-        <button disabled={!isDirty || !isValid || isSubmitting}>Submit</button>
+        <button disabled={!isDirty || isSubmitting}>Submit</button>
         <button type="button" onClick={() => reset()}>
           Reset
         </button>
@@ -223,11 +230,3 @@ const YouTubeForm = () => {
 };
 
 export default YouTubeForm;
-
-/* Normally, we plan to reset the form fields after successful form submission, and
-therefore we may think to call the reset method inside submitHandler after submission.
-However, the react-hook-library suggests that we should not do that. Instead, it
-advices that we should call the reset method inside an useEffect hook after the 
-isSubmitSuccessful state becomes true. [See code above]. */
-
-// There is more to reset. Read here: https://react-hook-form.com/docs/useform/reset
