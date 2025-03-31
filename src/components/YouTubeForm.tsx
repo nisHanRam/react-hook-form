@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FieldErrors } from "react-hook-form";
 
 type FormValues = {
   username: string;
@@ -54,6 +54,10 @@ const YouTubeForm = () => {
     console.log("Form submitted", data);
   };
 
+  const errorHandler = (error: FieldErrors<FormValues>) => {
+    console.log("Form errors: ", error);
+  };
+
   const handleGetValues = () => {
     // console.log("Get values: ", getValues());
     // If you want to get only one field, pass that as an argument.
@@ -86,7 +90,7 @@ const YouTubeForm = () => {
   return (
     <div>
       {/* <h2>Watched Value: {JSON.stringify(watchForm)}</h2> */}
-      <form onSubmit={handleSubmit(submitHandler)} noValidate>
+      <form onSubmit={handleSubmit(submitHandler, errorHandler)} noValidate>
         <div className="form-control">
           <label htmlFor="username">Username</label>
           <input
@@ -254,13 +258,9 @@ const YouTubeForm = () => {
 
 export default YouTubeForm;
 
-/* getValues is another method to read field values.
-getValues does not cause re-renders or subscribe to input changes.
-Thus, it is a more better option to get form values when user 
-performs some action, for example clicking a button.
-Here, note that changing a field value will not trigger getValue. */
-
-/* Calling setValue does not affect the state of the field such as 
-dirty, touched or validation. If we want to change the field state
-as ig the user is interacting, we need pass a third argument. 
-It is an options object as shown above. */
+/* We can pass a second argument to handleSubmit to handle errors.
+This error handler receives an argument "error" which is of type
+FieldErrors that you need to import from react-hook-form.
+This error handler is the perfect place to provide custom error 
+messages based on the errors object or even send reports to your
+login service. */
