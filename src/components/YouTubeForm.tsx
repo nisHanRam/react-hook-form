@@ -38,7 +38,12 @@ const YouTubeForm = () => {
     getValues,
     setValue,
   } = form;
-  const { errors } = formState;
+
+  const { errors, touchedFields, dirtyFields, isDirty } = formState;
+
+  console.log("touchedFields: ", touchedFields); // Shows the fields where user clicked, although he may not have changed the value
+  console.log("dirtyFields: ", dirtyFields); // Shows the fields whose values have changed from their previous values
+  console.log("isDirty: ", isDirty); // Shows where the form has changed from it previous values
 
   const { fields, append, remove } = useFieldArray({
     name: "phNumbers",
